@@ -4,8 +4,8 @@ var topnews="Headlines";
 var html="";
 var countrylist="";
 var detailpage="";
-var news_count='-1';		// this count will define how many news you want for each category..like you can give 5,10,15 etc.. '-1' meanse all news
-var latest_news_count=5;		// this count will define how many new latest news you want in latest news slider in home page 
+var news_count='6';		// this count will define how many news you want for each category..like you can give 5,10,15 etc.. '-1' meanse all news
+var latest_news_count=10;		// this count will define how many new latest news you want in latest news slider in home page 
 var listentext='Here is the Text';
 var homeJson="http://excellentwebworld.com/news/?json=get_all_categories_posts&news_count="+news_count;
 var LatestNewsJson="http://excellentwebworld.com/news/?json=get_recent_posts&count="+latest_news_count;	// this was will used for get latest news
