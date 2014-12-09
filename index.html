@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, target-densitydpi=medium-dpi, user-scalable=0" />
+        <link rel="stylesheet" href="css/my.css" />
+     	<link href="css/jquery-ui-1.8.13.custom.css" rel="stylesheet" /> 
+       <link rel="stylesheet" href="css/jquery.mobile-1.3.1.min.css" />
+       
+		<!-- Slider CSS -->
+        <link rel="stylesheet" href="css/swiper-demos.css?v=1.8">
+        <link rel="stylesheet" href="css/idangerous.swiper.css">
+        <link rel="stylesheet" href="font/stylesheet.css">
+
+		<script src="js/jquerymin.js"> </script> 
+        
+        <script src="js/jquery_mobile.js"> </script>  
+        <script src="js/jquery-ui.min.js"></script>     
+        <script src="js/jquery.validate.js"></script>     
+		<script type="text/javascript" charset="utf-8" src="js/modernizr.custom.js"></script>	
+ 		<script type="text/javascript" src="cordova.js"></script>
+        <script type="application/javascript" src="js/fastclick.js"></script>
+        <script src="js/jquery.ui.touch-punch.min.js"></script>  <!-- Country Menu SCroll  Js -->
+    	<script type="application/javascript" src="js/iscroll.js"></script>
+         <script type="text/javascript" src="js/mespeak.js"></script>
+
+       
+       <!-- Slider Js  & CSS-->
+        <script  src="js/jquery.flexslider.js"></script>
+        <script src="js/jquery.easing.js"></script>
+        <script src="js/jquery.mousewheel.js"></script>
+        <script src="js/demo.js"></script>
+
+
+	    <link rel="stylesheet" href="css/custom.css" />   <!-- Template CSS -->
+        <script type="application/javascript" src="js/clientjs.js"></script> <!-- All the Global Variabl an url are stored here which user can change -->      
+        <script type="application/javascript" src="js/jsoncall.js"></script> <!-- All the Javascript and Json Call code is written here -->
+        <script type="application/javascript" src="js/pushnotification.js"></script><!--  All Push Notification Related Code Here -->
+
+<!-- Carousel OWL slider JS &CSS -->
+
+        <link rel="stylesheet" href="css/owl.carousel.css">
+        <link rel="stylesheet" href="css/owl.theme.css">
+        <script src="js/owl.carousel.js"></script>
+  <script src="js/allscript.js"></script>
+ <script type="text/javascript">
+     
+     function initPushwoosh() {
+    
+         var pushNotification = window.plugins.pushNotification;
+         
+         //set push notification callback before we initialize the plugin
+         document.addEventListener('push-notification', function(event) {
+                                   //get the notification payload
+                                   var notification = event.notification;
+                                   //display alert to the user for example
+                                   alert(notification.aps.alert);
+                                   //clear the app badge
+                                   pushNotification.setApplicationIconBadgeNumber(0);
+                                   });
+                                   //initialize the plugin
+                                  
+                                   pushNotification.onDeviceReady({pw_appid:"8C4C5-96F2B"});
+                                   //register for pushes
+                                   pushNotification.registerDevice(
+                                                                   function(status) {
+                                                                   var deviceToken = status['deviceToken'];
+                                                                   console.log('registerDevice: ' + deviceToken);
+                                                                   },
+                                                                   function(status) {
+                                                                   console.log('failed to register : ' + JSON.stringify(status));
+                                                                   alert(JSON.stringify(['failed to register ', status]));
+                                                                   }
+                                                                   );
+                                                                   
+                                                                   //reset badges on app start
+                                                                   pushNotification.setApplicationIconBadgeNumber(0);
+     }
+ function init() {
+     
+     document.addEventListener("deviceready", initPushwoosh, true);
+     
+     //rest of the code
+ }
+ document.addEventListener('push-notification', function(event) {
+                           var notification = event.notification;
+                           alert("News Updated :-->"+notification.aps.alert);
+                           pushNotification.setApplicationIconBadgeNumber(0);
+                           });
+                           
+     
+    meSpeak.loadConfig("mespeak_config.json");
+    meSpeak.loadVoice("voices/en/en.json");
+    function loadVoice(id) {
+      var fname="voices/"+id+".json";
+      meSpeak.loadVoice(fname, voiceLoaded);
+    }
+    function voiceLoaded(success, message) {
+      if (success) {
+        alert("Voice loaded: "+message+".");
+      }
+      else {
+        alert("Failed to load a voice: "+message);
+      }
+    }
+    /*
+      auto-speak glue:
+      additional functions for generating a link and parsing any url-params provided for auto-speak
+    */
+    
+    var formFields = ['text','amplitude','wordgap','pitch','speed'];
+    function autoSpeak() {
+      // checks url for speech params, sets and plays them, if found.
+      // also adds eventListeners to update a link with those params using current values
+      var i,l,n,params,pairs,pair,
+          speakNow=null,
+          useDefaultVoice=true,
+          q=document.location.search,
+          f=document.getElementById('speakData'),
+          s1=document.getElementById('variantSelect'),
+          s2=document.getElementById('voiceSelect');
+      if (!f || !s2) return; // form and/or select not found
+      if (q.length>1) {
+        // parse url-params
+        params={};
+        pairs=q.substring(1).split('&');
+        for (i=0, l=pairs.length; i<l; i++) {
+          pair=pairs[i].split('=');
+          if (pair.length==2) params[pair[0]]=decodeURIComponent(pair[1]);
+        }
+        // insert params into the form or complete them from defaults in form
+        for (i=0, l=formFields.length; i<l; i++) {
+          n=formFields[i];
+          if (params[n]) {
+            f.elements[n].value=params[n];
+          }
+          else {
+            params[n]=f.elements[n].value;
+          }
+        }
+        if (params.variant) {
+          for (i=0, l=s1.options.length; i<l; i++) {
+          	if (s1.options[i].value==params.variant) {
+          	  s1.selectedIndex=i;
+          	  break;
+          	}
+          }
+        }
+        else {
+          params.variant='';
+        }
+        // compile a function to speak with given params for later use
+        // play only, if param "auto" is set to "true" or "1"
+        if (params.auto=='true' || params.auto=='1') {
+          speakNow = function() {
+            meSpeak.speak(params.text, {
+              amplitude: params.amplitude,
+              wordgap: params.wordgap,
+              pitch: params.pitch,
+              speed: params.speed,
+              variant: params.variant
+            });
+          };
+        }
+        // check for any voice specified by the params (other than the default)
+        if (params.voice && params.voice!=s2.options[s2.selectedIndex].value) {
+          // search selected voice in selector
+          for (i=0, l=s2.options.length; i<l; i++) {
+            if (s2.options[i].value==params.voice) {
+              // voice found: adjust the form, load voice-data and provide a callback to speak
+              s2.selectedIndex=i;
+              meSpeak.loadVoice('voices/'+params.voice+'.json', function(success, message) {
+                if (success) {
+                  if (speakNow) speakNow();
+                }
+                else {
+                  if (window.console) console.log('Failed to load requested voice: '+message);
+                }
+              });
+              useDefaultVoice=false;
+              break;
+            }
+          }
+        }
+        // standard voice: speak (deferred until config is loaded)
+        if (speakNow && useDefaultVoice) speakNow();
+      }
+      // initial url-processing done, add eventListeners for updating the link
+      for (i=0, l=formFields.length; i<l; i++) {
+        f.elements[formFields[i]].addEventListener('change', updateSpeakLink, false);
+      }
+      s1.addEventListener('change', updateSpeakLink, false);
+      s2.addEventListener('change', updateSpeakLink, false);
+      // finally, inject a link with current values into the page
+      updateSpeakLink();
+    }
+    
+    function updateSpeakLink() {
+      // injects a link for auto-execution using current values into the page
+      var i,l,n,f,s,v,url,el,params=new Array();
+      // collect values from form
+      f=document.getElementById('speakData');
+      for (i=0, l=formFields.length; i<l; i++) {
+        n=formFields[i];
+        params.push(n+'='+encodeURIComponent(f.elements[n].value));
+      }
+      // get variant
+      s=document.getElementById('variantSelect');
+      if (s.selectedIndex>=0) params.push('variant='+s.options[s.selectedIndex].value);
+      // get current voice, default to 'en/en' as a last resort
+      s=document.getElementById('voiceSelect');
+      if (s.selectedIndex>=0) v=s.options[s.selectedIndex].value;
+      if (!v) v=meSpeak.getDefaultVoice() || 'en/en';
+      params.push('voice='+encodeURIComponent(v));
+      params.push('auto=true');
+      // assemble the url and add it as GET-link to the page
+      url='?'+params.join('&');
+      url=url.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\"/g, '&quot;');
+      el=document.getElementById('linkdisplay');
+      if (el) el.innerHTML='Instant Link: <a href="'+url+'">Speak this</a>.';
+    }
+    
+    // trigger auto-speak at DOMContentLoaded
+    if (document.addEventListener) document.addEventListener( "DOMContentLoaded", autoSpeak, false );
+    
+    /*
+      end of auto-speak glue
+    */
+
+  </script>
+<title>Bulletin</title>
+</head>
+<body  id="body" class="main_back" onload="init();">
+ <!--main menu-page--> 
+
+ <div data-role="page" id="home" class="main_menu home">
+   
+    <div data-theme="" id="header" class="header" >
+  
+             <div class="leftheader">
+          		 <div class="logo"><a data-theme="" data-icon=""><img src="images/logo.png"></a></div>
+            </div>
+            <div class="rightheader">
+                 <div class="listen seprator"><a href="#termsofuse" ><img src="images/listen.png"></a></div>
+				 <div class="reload reloadhome seprator"><a  data-theme="" data-icon=""><img src="images/reload.png"></a></div>
+                 <div class="edit "><a href="#countrylist" data-transition="pop" data-theme="" data-icon=""><img src="images/edit.png"></a></div>
+       		</div>
+        <div class="latestnewssliderdynamic">
+                <!-- Dynamically Latest News Slider Will Come from jsoncall.js file with function name  getlatestnews -->  
+        </div>                       
+    </div>
+   
+ <div data-role="content">
+ 
+        <div class="topnewssliderdiv"></div> <!-- Top News Slider Will Load From Jsoncall.js file -->     
+         <div class="newssliderdiv"></div>  <!--News Slider Will Load From Jsoncall.js file -->     
+ 
+ </div>  <!-- Cotent End -->
+ </div>      <!--Home Page End -->
+<!-- Country List Page Start -->
+<div data-role="page" id="countrylist" class="countrylist">
+      <div  class="header" >
+            <div class="leftheader">
+            	<span class="logo"><a data-theme="" data-icon=""><img src="images/logo.png"></a></span>
+            </div>
+           
+	</div> <!-- header ends -->
+    <div data-role="content" class="newscategorymaster">
+     
+                
+              <fieldset data-role="controlgroup" data-iconpos="right"   >
+                   <ul id="sortable" style="" class="coutrylistul" >
+                	</ul>
+                    
+                    </fieldset>
+                   
+           
+    </div>
+    <div class="countrylistfooter" >
+  		     <a onClick="appendnewsslider();"><img src="images/ok.png" /></a>
+     </div>
+</div>  <!--Country List End -->
+<!--Terms of use Page Start -->
+<div data-role="page" id="termsofuse" class="termsofuse">
+     <div data-theme="" id="header" class="header" >
+             <div class="leftheader">
+          		 <div class="logo"><a onClick="gotohome();"   data-theme="" data-icon=""><img src="images/logo.png"></a></div>
+            </div>
+         
+                       
+    </div>
+    <div data-role="content">
+        	<!-- Change Auther Detail Here -->
+        	
+<p>News Applicaiton is developed by excellentwebworld.This application is useful for who want to display news based on category with nice and cool effect, magazine site, blog website and much more who want to display his/her wordpress blog information on mobile device using application.</p>
+<p>We are thanks full to all of you who download News application.</p>
+<p>We hope this application will useful for all of you</p>
+<div class="contactdetail">
+<div class="call"><a class="classname" href="tel:+919974974355">Call Us</a></div>
+<div class="visitus"><a class="classname"  onClick='window.open("http://excellentwebworld.com", "_blank","location=yes");'>Visit Us</a></div>
+<div class="email"><a class="classname" onclick='sendemail("Enquiry");'>Drop Mail</a></div>
+</div>       
+
+           
+    </div>
+   <!-- <div class="footer" data-theme=""  id="footer" >
+            <div class="storyphoto"><div class="seprator"><a href="#upload" >Story/Photo</a></div></div>
+            <div class="help"><div class="seprator"><a href="#help">Help</a></div></div>
+            <div class="privacy"><div class="seprator"><a href="#privacy">Privacy</a></div></div>
+            <div class="termsofuse"><a href="#termsofuse">About Us</a></div>
+    
+    </div>   -->
+</div>  <!--Terms of use Page End -->
+
+
+<!--Detail Page Start -->
+<div data-role="page" id="detailpage" class="detailpage">
+     <div data-theme="" id="header" class="header">
+             <div class="leftheader">
+          		 <div class="logo"><a  onClick="gotohome();"  data-theme="" data-icon=""><img src="images/logo.png"></a></div>
+            </div>
+            <div class="rightheader">
+          		 <div class="reload seprator ttsmaster"><a class="tts" onclick="textTospeech();" data-theme="" data-icon=""><img src="images/ear.png"></a></div>
+               	<!-- <div class="listen seprator"><a  data-theme="" data-icon=""><img src="images/listen.png"></a></div>-->
+               <div class="edit share"><a data-theme="" data-icon=""><img src="images/share.png"></a></div>
+            </div>
+               
+    </div>
+  
+      <div data-role="content">
+               <div class="slider">
+                      
+                </div>
+      </div>
+ 
+</div>  <!--Detail Page End -->
+
+
+
+
+  <div class="loading"> <img src="images/loading.jpg" /> </div>   <!-- Div For Show Loading Imaage -->
+
+
+
+</body>
+
+</html>
